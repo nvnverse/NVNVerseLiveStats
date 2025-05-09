@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NVN Verse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Poppins:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* [CSS remains unchanged — paste yours here as-is for consistency] */
+  </style>
+</head>
+<body>
+<header>
+  <h1>NVN Verse</h1>
+  <a href="https://youtube.com/@nvnmusichd" target="_blank" class="subscribe-btn">SUBSCRIBE</a>
+</header>
+
+<div class="main-content active" id="home">
+  <div class="banner">
+    <img id="channel-banner" src="" alt="Channel Banner">
+  </div>
+  <div class="profile-pic-wrapper">
+    <img id="profile-pic" src="" alt="Channel Profile Picture">
+  </div>
+  <div class="section-title">Live Stats - NVN Music HD</div>
+  <div class="stats-container">
+    <div class="stat-box"><i class="fas fa-users"></i><div class="stat-number" id="subs">--</div><div class="stat-label">Subscribers</div></div>
+    <div class="stat-box"><i class="fas fa-eye"></i><div class="stat-number" id="views">--</div><div class="stat-label">Total Views</div></div>
+    <div class="stat-box"><i class="fas fa-thumbs-up"></i><div class="stat-number">N/A</div><div class="stat-label">Likes</div></div>
+    <div class="stat-box"><i class="fas fa-video"></i><div class="stat-number" id="videos">--</div><div class="stat-label">Total Videos</div></div>
+    <div class="stat-box"><i class="fas fa-chart-line"></i><div class="stat-number" id="daily-monthly-views">Coming Soon</div><div class="stat-label">Daily / Monthly Views</div></div>
+    <div class="stat-box"><i class="fas fa-user-plus"></i><div class="stat-number" id="daily-monthly-subs">Coming Soon</div><div class="stat-label">Daily / Monthly Subs</div></div>
+  </div>
+</div>
+
+<!-- [Privacy, Support, Terms, Footer remains unchanged] -->
+
+<script>
+  const API_KEY = "AIzaSyDyjT63YrJZIHa2Hb1oKFHll7sg0NKA378";
+  const CHANNEL_ID = "UCoUqEYtfkhAsGt-ctaaZGog";
+
+  async function loadYouTubeData() {
+    try {
+      const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,brandingSettings&id=${CHANNEL_ID}&key=${API_KEY}`);
+      const data = await channelRes.json();
+      const stats = data.items[0].statistics;
+      const snippet = data.items[0].snippet;
+      const branding = data.items[0].brandingSettings;
+
+      document.getElementById("subs").innerText = Number(stats.subscriberCount).toLocaleString();
+      document.getElementById("views").innerText = Number(stats.viewCount).toLocaleString();
+      document.getElementById("videos").innerText = Number(stats.videoCount).toLocaleString();
+      document.getElementById("profile-pic").src = snippet.thumbnails.high.url;
+
+      // Banner URL from brandingSettings
+      const bannerUrl = branding.image?.bannerExternalUrl || "";
+      document.getElementById("channel-banner").src = bannerUrl;
+
+    } catch (err) {
+      console.error("Failed to load YouTube data", err);
+    }
+  }
+
+  loadYouTubeData();
+  setInterval(loadYouTubeData, 60000); // Refresh every 60 seconds
+
+  function showSection(id) {
+    document.querySelectorAll('.main-content, .page-section').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+</script>
+</body>
+</html>
